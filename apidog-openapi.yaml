@@ -1,0 +1,1041 @@
+openapi: 3.0.3
+info:
+  title: Poultry Management System API
+  version: 1.0.0
+  description: OpenAPI specification for the poultry farm management MVP backend.
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Health
+  - name: Cycles
+  - name: Daily Logs
+  - name: Feed
+  - name: Weight
+  - name: Medication
+  - name: Expenses
+  - name: Sales
+  - name: Dashboard
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /api/cycles:
+    get:
+      tags: [Cycles]
+      summary: List cycles
+      responses:
+        "200":
+          description: List of cycles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CycleListResponse"
+    post:
+      tags: [Cycles]
+      summary: Create cycle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCycleRequest"
+      responses:
+        "201":
+          description: Cycle created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CycleResponse"
+
+  /api/cycles/{id}:
+    get:
+      tags: [Cycles]
+      summary: Get cycle by ID
+      parameters:
+        - $ref: "#/components/parameters/CycleIdAltPath"
+      responses:
+        "200":
+          description: Cycle details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CycleResponse"
+
+  /api/cycles/{cycleId}/daily-logs:
+    get:
+      tags: [Daily Logs]
+      summary: List daily logs by cycle
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Daily logs for the cycle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyLogListResponse"
+    post:
+      tags: [Daily Logs]
+      summary: Add daily log
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDailyLogRequest"
+      responses:
+        "201":
+          description: Daily log created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyLogResponse"
+
+  /api/cycles/{cycleId}/feed-purchases:
+    get:
+      tags: [Feed]
+      summary: List feed purchases by cycle
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Feed purchases for the cycle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedPurchaseListResponse"
+    post:
+      tags: [Feed]
+      summary: Add feed purchase
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFeedPurchaseRequest"
+      responses:
+        "201":
+          description: Feed purchase created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedPurchaseResponse"
+
+  /api/cycles/{cycleId}/weight-logs:
+    get:
+      tags: [Weight]
+      summary: List weight logs by cycle
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Weight logs for the cycle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeightLogListResponse"
+    post:
+      tags: [Weight]
+      summary: Add weight log
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWeightLogRequest"
+      responses:
+        "201":
+          description: Weight log created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeightLogResponse"
+
+  /api/cycles/{cycleId}/medication-logs:
+    get:
+      tags: [Medication]
+      summary: List medication logs by cycle
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Medication logs for the cycle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicationLogListResponse"
+    post:
+      tags: [Medication]
+      summary: Add medication log
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMedicationLogRequest"
+      responses:
+        "201":
+          description: Medication log created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicationLogResponse"
+
+  /api/cycles/{cycleId}/expenses:
+    get:
+      tags: [Expenses]
+      summary: List expenses by cycle
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Expenses for the cycle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseListResponse"
+    post:
+      tags: [Expenses]
+      summary: Add manual expense
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateManualExpenseRequest"
+      responses:
+        "201":
+          description: Expense created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseResponse"
+
+  /api/cycles/{cycleId}/expenses/breakdown:
+    get:
+      tags: [Expenses]
+      summary: Get expense breakdown by category
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Expense breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseBreakdownResponse"
+
+  /api/cycles/{cycleId}/sales:
+    get:
+      tags: [Sales]
+      summary: Get sale by cycle
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Sale for the cycle, or null if none exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaleOptionalResponse"
+    post:
+      tags: [Sales]
+      summary: Create sale
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSaleRequest"
+      responses:
+        "201":
+          description: Sale created and cycle completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaleResponse"
+
+  /api/cycles/{cycleId}/dashboard:
+    get:
+      tags: [Dashboard]
+      summary: Get dashboard KPIs
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponseEnvelope"
+
+  /api/cycles/{cycleId}/report:
+    get:
+      tags: [Dashboard]
+      summary: Get cycle report
+      parameters:
+        - $ref: "#/components/parameters/CycleIdPath"
+      responses:
+        "200":
+          description: Cycle report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponseEnvelope"
+
+components:
+  parameters:
+    CycleIdPath:
+      name: cycleId
+      in: path
+      required: true
+      schema:
+        type: string
+    CycleIdAltPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    HealthResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required: [status]
+          properties:
+            status:
+              type: string
+              example: ok
+
+    ApiEnvelope:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          nullable: true
+
+    Cycle:
+      type: object
+      required:
+        - id
+        - name
+        - startDate
+        - endDate
+        - status
+        - initialBirds
+        - chickPrice
+        - expectedFinalWeightKg
+        - expectedSellingPricePerKg
+        - expectedRemainingCost
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [ACTIVE, COMPLETED]
+        initialBirds:
+          type: integer
+        chickPrice:
+          type: number
+        expectedFinalWeightKg:
+          type: number
+        expectedSellingPricePerKg:
+          type: number
+        expectedRemainingCost:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateCycleRequest:
+      type: object
+      required:
+        - name
+        - startDate
+        - initialBirds
+        - chickPrice
+        - expectedFinalWeightKg
+        - expectedSellingPricePerKg
+        - expectedRemainingCost
+      properties:
+        name:
+          type: string
+        startDate:
+          type: string
+          description: ISO date or datetime string
+        initialBirds:
+          type: integer
+          minimum: 1
+        chickPrice:
+          type: number
+          minimum: 0
+        expectedFinalWeightKg:
+          type: number
+          exclusiveMinimum: 0
+        expectedSellingPricePerKg:
+          type: number
+          minimum: 0
+        expectedRemainingCost:
+          type: number
+          minimum: 0
+
+    CycleResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/Cycle"
+
+    CycleListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Cycle"
+
+    DailyLog:
+      type: object
+      required:
+        - id
+        - cycleId
+        - date
+        - deaths
+        - feedConsumedKg
+        - temperature
+        - humidity
+        - notes
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        cycleId:
+          type: string
+        date:
+          type: string
+          format: date
+        deaths:
+          type: integer
+        feedConsumedKg:
+          type: number
+        temperature:
+          type: number
+          nullable: true
+        humidity:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateDailyLogRequest:
+      type: object
+      required: [date, deaths, feedConsumedKg]
+      properties:
+        date:
+          type: string
+          description: ISO date or datetime string
+        deaths:
+          type: integer
+          minimum: 0
+        feedConsumedKg:
+          type: number
+          minimum: 0
+        temperature:
+          type: number
+          nullable: true
+        humidity:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    DailyLogResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/DailyLog"
+
+    DailyLogListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyLog"
+
+    FeedPurchase:
+      type: object
+      required:
+        - id
+        - cycleId
+        - purchaseDate
+        - feedType
+        - quantityKg
+        - unitPrice
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        cycleId:
+          type: string
+        purchaseDate:
+          type: string
+          format: date
+        feedType:
+          type: string
+          enum: [STARTER, GROWER, FINISHER]
+        quantityKg:
+          type: number
+        unitPrice:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateFeedPurchaseRequest:
+      type: object
+      required: [purchaseDate, feedType, quantityKg, unitPrice]
+      properties:
+        purchaseDate:
+          type: string
+          description: ISO date or datetime string
+        feedType:
+          type: string
+          enum: [STARTER, GROWER, FINISHER]
+        quantityKg:
+          type: number
+          exclusiveMinimum: 0
+        unitPrice:
+          type: number
+          minimum: 0
+
+    FeedPurchaseResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/FeedPurchase"
+
+    FeedPurchaseListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeedPurchase"
+
+    WeightLog:
+      type: object
+      required:
+        - id
+        - cycleId
+        - date
+        - sampleSize
+        - averageWeightKg
+        - notes
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        cycleId:
+          type: string
+        date:
+          type: string
+          format: date
+        sampleSize:
+          type: integer
+        averageWeightKg:
+          type: number
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateWeightLogRequest:
+      type: object
+      required: [date, sampleSize, averageWeightKg]
+      properties:
+        date:
+          type: string
+          description: ISO date or datetime string
+        sampleSize:
+          type: integer
+          minimum: 1
+        averageWeightKg:
+          type: number
+          exclusiveMinimum: 0
+        notes:
+          type: string
+          nullable: true
+
+    WeightLogResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/WeightLog"
+
+    WeightLogListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeightLog"
+
+    MedicationLog:
+      type: object
+      required:
+        - id
+        - cycleId
+        - date
+        - medicineName
+        - dosage
+        - cost
+        - notes
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        cycleId:
+          type: string
+        date:
+          type: string
+          format: date
+        medicineName:
+          type: string
+        dosage:
+          type: string
+        cost:
+          type: number
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateMedicationLogRequest:
+      type: object
+      required: [date, medicineName, dosage, cost]
+      properties:
+        date:
+          type: string
+          description: ISO date or datetime string
+        medicineName:
+          type: string
+        dosage:
+          type: string
+        cost:
+          type: number
+          minimum: 0
+        notes:
+          type: string
+          nullable: true
+
+    MedicationLogResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/MedicationLog"
+
+    MedicationLogListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MedicationLog"
+
+    Expense:
+      type: object
+      required:
+        - id
+        - cycleId
+        - expenseDate
+        - category
+        - amount
+        - description
+        - sourceType
+        - sourceId
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        cycleId:
+          type: string
+        expenseDate:
+          type: string
+          format: date
+        category:
+          type: string
+          enum:
+            [
+              CHICKS,
+              FEED,
+              MEDICATION,
+              LABOR,
+              ELECTRICITY,
+              TRANSPORT,
+              MISC,
+              OTHER,
+            ]
+        amount:
+          type: number
+        description:
+          type: string
+          nullable: true
+        sourceType:
+          type: string
+          nullable: true
+          enum: [MANUAL, FEED_PURCHASE, MEDICATION_LOG, SYSTEM]
+        sourceId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateManualExpenseRequest:
+      type: object
+      required: [expenseDate, category, amount]
+      properties:
+        expenseDate:
+          type: string
+          description: ISO date or datetime string
+        category:
+          type: string
+          enum:
+            [
+              CHICKS,
+              FEED,
+              MEDICATION,
+              LABOR,
+              ELECTRICITY,
+              TRANSPORT,
+              MISC,
+              OTHER,
+            ]
+        amount:
+          type: number
+          minimum: 0
+        description:
+          type: string
+          nullable: true
+
+    ExpenseResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/Expense"
+
+    ExpenseListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Expense"
+
+    ExpenseBreakdownResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          additionalProperties:
+            type: number
+
+    Sale:
+      type: object
+      required:
+        - id
+        - cycleId
+        - saleDate
+        - birdsSold
+        - averageSellingWeightKg
+        - pricePerKg
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        cycleId:
+          type: string
+        saleDate:
+          type: string
+          format: date
+        birdsSold:
+          type: integer
+        averageSellingWeightKg:
+          type: number
+        pricePerKg:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateSaleRequest:
+      type: object
+      required: [saleDate, birdsSold, averageSellingWeightKg, pricePerKg]
+      properties:
+        saleDate:
+          type: string
+          description: ISO date or datetime string
+        birdsSold:
+          type: integer
+          minimum: 1
+        averageSellingWeightKg:
+          type: number
+          exclusiveMinimum: 0
+        pricePerKg:
+          type: number
+          minimum: 0
+
+    SaleResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/Sale"
+
+    SaleOptionalResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          anyOf:
+            - $ref: "#/components/schemas/Sale"
+            - type: "null"
+
+    ChartPoint:
+      type: object
+      required: [date, value]
+      properties:
+        date:
+          type: string
+          format: date
+        value:
+          type: number
+          nullable: true
+
+    DashboardCharts:
+      type: object
+      required:
+        - deaths
+        - temperature
+        - humidity
+        - feedConsumedKg
+        - averageWeightKg
+      properties:
+        deaths:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartPoint"
+        temperature:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartPoint"
+        humidity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartPoint"
+        feedConsumedKg:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartPoint"
+        averageWeightKg:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartPoint"
+
+    DashboardResponseEnvelope:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          required:
+            - cycleId
+            - cycleName
+            - cycleStatus
+            - currentDay
+            - initialBirds
+            - totalDeaths
+            - remainingBirds
+            - mortalityRate
+            - totalFeedConsumedKg
+            - latestAverageWeightKg
+            - feedCost
+            - medicationCost
+            - otherExpenses
+            - totalExpenses
+            - estimatedRevenue
+            - estimatedProfit
+            - actualRevenue
+            - actualProfit
+            - fcrEstimate
+            - actualFcr
+            - charts
+          properties:
+            cycleId:
+              type: string
+            cycleName:
+              type: string
+            cycleStatus:
+              type: string
+              enum: [ACTIVE, COMPLETED]
+            currentDay:
+              type: integer
+            initialBirds:
+              type: integer
+            totalDeaths:
+              type: integer
+            remainingBirds:
+              type: integer
+            mortalityRate:
+              type: number
+            totalFeedConsumedKg:
+              type: number
+            latestAverageWeightKg:
+              type: number
+              nullable: true
+            feedCost:
+              type: number
+            medicationCost:
+              type: number
+            otherExpenses:
+              type: number
+            totalExpenses:
+              type: number
+            estimatedRevenue:
+              type: number
+            estimatedProfit:
+              type: number
+            actualRevenue:
+              type: number
+              nullable: true
+            actualProfit:
+              type: number
+              nullable: true
+            fcrEstimate:
+              type: number
+              nullable: true
+            actualFcr:
+              type: number
+              nullable: true
+            charts:
+              $ref: "#/components/schemas/DashboardCharts"
