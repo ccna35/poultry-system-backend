@@ -44,6 +44,7 @@ export class DailyLogService {
             feedConsumedKg: input.feedConsumedKg,
             temperature: input.temperature ?? null,
             humidity: input.humidity ?? null,
+            waterConsumedLiters: input.waterConsumedLiters ?? null,
             notes: input.notes ?? null,
             createdAt: timestamp,
             updatedAt: timestamp,
