@@ -132,7 +132,7 @@ const seedRealisticData = async ({
     expenseService,
 }: SeedServices): Promise<void> => {
     const cycle = await cycleService.createCycle({
-        name: 'June 2026 Broiler Batch',
+        name: 'دورة شهر 6 عام 2026',
         startDate: '2026-06-01',
         initialBirds: 1000,
         chickPrice: 1.8,
