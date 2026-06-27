@@ -8,6 +8,7 @@ const addDailyLogSchema = z.object({
     date: z.string().datetime().or(z.string().min(1)),
     deaths: z.number().int().min(0),
     feedConsumedKg: z.number().min(0),
+    waterConsumedLiters: z.number().min(0),
     temperature: z.number().nullable().optional(),
     humidity: z.number().nullable().optional(),
     notes: z.string().nullable().optional(),

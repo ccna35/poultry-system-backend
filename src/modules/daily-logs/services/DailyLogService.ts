@@ -24,7 +24,7 @@ export class DailyLogService {
         );
 
         if (existingLog) {
-            throw new ConflictError('Daily log date must be unique per cycle');
+            throw new ConflictError('لا يمكن تكرار تاريخ السجل اليومي داخل نفس الدورة.');
         }
 
         const currentDeaths = await this.dailyLogRepository.getTotalDeathsByCycle(
@@ -32,7 +32,7 @@ export class DailyLogService {
         );
 
         if (currentDeaths + input.deaths > cycle.initialBirds) {
-            throw new ValidationError('Total deaths cannot exceed initial birds');
+            throw new ValidationError('لا يمكن أن يتجاوز إجمالي النافق عدد الطيور الأولي.');
         }
 
         const timestamp = nowIso();

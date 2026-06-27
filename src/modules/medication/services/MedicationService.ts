@@ -19,10 +19,6 @@ export class MedicationService {
             throw new ValidationError('medicineName is required');
         }
 
-        if (input.cost < 0) {
-            throw new ValidationError('cost cannot be negative');
-        }
-
         await this.cycleService.ensureCycleIsActive(input.cycleId);
 
         const timestamp = nowIso();
@@ -32,7 +28,6 @@ export class MedicationService {
             date: toDateOnly(input.date),
             medicineName: input.medicineName.trim(),
             dosage: input.dosage,
-            cost: input.cost,
             notes: input.notes ?? null,
             createdAt: timestamp,
             updatedAt: timestamp,
@@ -44,7 +39,6 @@ export class MedicationService {
             cycleId: createdLog.cycleId,
             medicationLogId: createdLog.id,
             date: createdLog.date,
-            amount: createdLog.cost,
         });
 
         return createdLog;

@@ -24,7 +24,6 @@ export interface MedicationLogCreatedPayload {
     cycleId: string;
     medicationLogId: string;
     date: string;
-    amount: number;
 }
 
 export interface DomainEventPayloadMap {
