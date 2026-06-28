@@ -1,5 +1,7 @@
-export type DosageUnit = "ملعقة" | "جرام" | "مل" | "سم";
-export type DosagePerUnit = "لتر" | "طائر" | "كجم";
+// export type DosageUnit = "ملعقة" | "جرام" | "مل" | "سم";
+// export type DosagePerUnit = "لتر" | "طائر" | "كجم";
+
+import { DosagePerUnit, DosageUnit } from "../../../generated/prisma/enums";
 
 export interface MedicationDosage {
     amount: number;        // 10

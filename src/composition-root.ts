@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import { Router } from 'express';
 
 import { CycleController } from './modules/cycles/controllers/CycleController';
-import { InMemoryCycleRepository } from './modules/cycles/repositories/InMemoryCycleRepository';
 import { createCycleRouter } from './modules/cycles/routes/cycle.routes';
 import { CycleService } from './modules/cycles/services/CycleService';
 import { DailyLogController } from './modules/daily-logs/controllers/DailyLogController';
@@ -33,6 +33,10 @@ import { InMemoryWeightRepository } from './modules/weight/repositories/InMemory
 import { createWeightRouter } from './modules/weight/routes/weight.routes';
 import { WeightService } from './modules/weight/services/WeightService';
 import { EventBus } from './shared/events/EventBus';
+import { PrismaCycleRepository } from './modules/cycles/repositories/PrismaCycleRepository';
+import { DosagePerUnit, DosageUnit, PrismaClient } from './generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaDailyLogRepository } from './modules/daily-logs/repositories/PrismaDailyLogRepository';
 
 export type CompositionRoot = {
     apiRouter: Router;
@@ -41,8 +45,16 @@ export type CompositionRoot = {
 export const createCompositionRoot = async (): Promise<CompositionRoot> => {
     const eventBus = new EventBus();
 
-    const cycleRepository = new InMemoryCycleRepository();
-    const dailyLogRepository = new InMemoryDailyLogRepository();
+    // const cycleRepository = new InMemoryCycleRepository();
+
+    const prisma = new PrismaClient({
+        adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+    });
+
+    const cycleRepository = new PrismaCycleRepository(prisma);
+    const dailyLogRepository = new PrismaDailyLogRepository(prisma);
+
+    // const dailyLogRepository = new InMemoryDailyLogRepository();
     const feedRepository = new InMemoryFeedRepository();
     const weightRepository = new InMemoryWeightRepository();
     const medicationRepository = new InMemoryMedicationRepository();
@@ -74,14 +86,14 @@ export const createCompositionRoot = async (): Promise<CompositionRoot> => {
 
     registerExpenseEventHandlers(eventBus, expenseService);
 
-    await seedRealisticData({
-        cycleService,
-        dailyLogService,
-        feedService,
-        weightService,
-        medicationService,
-        expenseService,
-    });
+    // await seedRealisticData({
+    //     cycleService,
+    //     dailyLogService,
+    //     feedService,
+    //     weightService,
+    //     medicationService,
+    //     expenseService,
+    // });
 
     const cycleController = new CycleController(cycleService);
     const dailyLogController = new DailyLogController(dailyLogService);
@@ -205,9 +217,30 @@ const seedRealisticData = async ({
     }
 
     const seededMedicationLogs = [
-        { date: '2026-06-04', medicineName: 'Vitamin Complex', dosage: '1 ml per liter', cost: 45, notes: 'Administered for stress support' },
-        { date: '2026-06-11', medicineName: 'Coccidiostat', dosage: '0.5 g per liter', cost: 62, notes: 'Preventive schedule dose' },
-        { date: '2026-06-18', medicineName: 'Electrolyte Booster', dosage: '1 g per liter', cost: 38, notes: 'Heat stress support' },
+        {
+            date: '2026-06-04', medicineName: 'Vitamin Complex', dosage: {
+                amount: 67,
+                unit: DosageUnit.SPOON,
+                perAmount: 1,
+                perUnit: DosagePerUnit.KG,
+            }, notes: 'Administered for stress support'
+        },
+        {
+            date: '2026-06-11', medicineName: 'Coccidiostat', dosage: {
+                amount: 80,
+                unit: DosageUnit.SPOON,
+                perAmount: 1,
+                perUnit: DosagePerUnit.KG,
+            }, notes: 'Preventive schedule dose'
+        },
+        {
+            date: '2026-06-18', medicineName: 'Electrolyte Booster', dosage: {
+                amount: 25,
+                unit: DosageUnit.SPOON,
+                perAmount: 1,
+                perUnit: DosagePerUnit.KG,
+            }, notes: 'Heat stress support'
+        },
     ];
 
     for (const medicationLog of seededMedicationLogs) {
