@@ -13,6 +13,11 @@ export class InMemoryDailyLogRepository implements DailyLogRepository {
         return log;
     }
 
+    async createWithFeedConsumption(log: DailyLog): Promise<DailyLog> {
+        this.dailyLogs.push(log);
+        return log;
+    }
+
     async listByCycle(cycleId: string): Promise<DailyLog[]> {
         return this.dailyLogs
             .filter((log) => log.cycleId === cycleId)

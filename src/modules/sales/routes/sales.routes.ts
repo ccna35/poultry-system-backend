@@ -6,8 +6,7 @@ import { SalesController } from '../controllers/SalesController';
 
 const createSaleSchema = z.object({
     saleDate: z.string().datetime().or(z.string().min(1)),
-    birdsSold: z.number().int().positive(),
-    averageSellingWeightKg: z.number().positive(),
+    totalWeightKg: z.number().positive(),
     pricePerKg: z.number().min(0),
 });
 

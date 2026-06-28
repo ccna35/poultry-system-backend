@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient, Cycle as PrismaCycleModel } from '../../../generated/prisma/client';
+import { Expense } from '../../expenses/domain/Expense';
 import { Cycle } from '../domain/Cycle';
 import { CycleRepository } from './CycleRepository';
 
@@ -8,6 +9,22 @@ export class PrismaCycleRepository implements CycleRepository {
     async create(cycle: Cycle): Promise<Cycle> {
         const createdCycle = await this.prisma.cycle.create({
             data: toPrismaCreateData(cycle),
+        });
+
+        return toDomainCycle(createdCycle);
+    }
+
+    async createWithInitialExpense(cycle: Cycle, expense: Expense): Promise<Cycle> {
+        const createdCycle = await this.prisma.$transaction(async (tx) => {
+            const createdCycle = await tx.cycle.create({
+                data: toPrismaCreateData(cycle),
+            });
+
+            await tx.expense.create({
+                data: toPrismaExpenseCreateData(expense),
+            });
+
+            return createdCycle;
         });
 
         return toDomainCycle(createdCycle);
@@ -92,6 +109,21 @@ function toPrismaUpdateData(cycle: Cycle): Prisma.CycleUpdateInput {
 
         // No need to set updatedAt manually.
         // Prisma will update it because of @updatedAt.
+    };
+}
+
+function toPrismaExpenseCreateData(expense: Expense): Prisma.ExpenseUncheckedCreateInput {
+    return {
+        id: expense.id,
+        cycleId: expense.cycleId,
+        expenseDate: toDateOnly(expense.expenseDate),
+        category: expense.category,
+        amount: toDecimal(expense.amount),
+        description: expense.description ?? null,
+        sourceType: expense.sourceType ?? null,
+        sourceId: expense.sourceId ?? null,
+        createdAt: new Date(expense.createdAt),
+        updatedAt: new Date(expense.updatedAt),
     };
 }
 

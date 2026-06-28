@@ -41,6 +41,7 @@ export class DailyLogService {
             cycleId: input.cycleId,
             date: normalizedDate,
             deaths: input.deaths,
+            feedType: input.feedType,
             feedConsumedKg: input.feedConsumedKg,
             temperature: input.temperature ?? null,
             humidity: input.humidity ?? null,
@@ -50,7 +51,7 @@ export class DailyLogService {
             updatedAt: timestamp,
         };
 
-        return this.dailyLogRepository.create(dailyLog);
+        return this.dailyLogRepository.createWithFeedConsumption(dailyLog);
     }
 
     async listDailyLogsByCycle(cycleId: string): Promise<DailyLog[]> {

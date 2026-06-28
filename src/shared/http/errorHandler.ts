@@ -8,6 +8,7 @@ export const errorHandler = (
     res: Response,
     _next: NextFunction,
 ): void => {
+
     if (err instanceof AppError) {
         res.status(err.statusCode).json({
             success: false,
@@ -18,6 +19,8 @@ export const errorHandler = (
         });
         return;
     }
+
+    console.error(err);
 
     res.status(500).json({
         success: false,

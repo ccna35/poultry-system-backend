@@ -13,6 +13,11 @@ export class InMemorySaleRepository implements SaleRepository {
         return sale;
     }
 
+    async createAndCompleteCycle(sale: Sale): Promise<Sale> {
+        this.sales.push(sale);
+        return sale;
+    }
+
     async findByCycle(cycleId: string): Promise<Sale | null> {
         return this.sales.find((sale) => sale.cycleId === cycleId) ?? null;
     }

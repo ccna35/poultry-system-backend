@@ -5,7 +5,6 @@ import { CycleController } from './modules/cycles/controllers/CycleController';
 import { createCycleRouter } from './modules/cycles/routes/cycle.routes';
 import { CycleService } from './modules/cycles/services/CycleService';
 import { DailyLogController } from './modules/daily-logs/controllers/DailyLogController';
-import { InMemoryDailyLogRepository } from './modules/daily-logs/repositories/InMemoryDailyLogRepository';
 import { createDailyLogRouter } from './modules/daily-logs/routes/daily-log.routes';
 import { DailyLogService } from './modules/daily-logs/services/DailyLogService';
 import { DashboardController } from './modules/dashboard/controllers/DashboardController';
@@ -13,23 +12,23 @@ import { createDashboardRouter } from './modules/dashboard/routes/dashboard.rout
 import { DashboardService } from './modules/dashboard/services/DashboardService';
 import { ExpenseController } from './modules/expenses/controllers/ExpenseController';
 import { registerExpenseEventHandlers } from './modules/expenses/handlers/expense.event-handlers';
-import { InMemoryExpenseRepository } from './modules/expenses/repositories/InMemoryExpenseRepository';
+import { PrismaExpenseRepository } from './modules/expenses/repositories/PrismaExpenseRepository';
 import { createExpenseRouter } from './modules/expenses/routes/expense.routes';
 import { ExpenseService } from './modules/expenses/services/ExpenseService';
 import { FeedController } from './modules/feed/controllers/FeedController';
-import { InMemoryFeedRepository } from './modules/feed/repositories/InMemoryFeedRepository';
+import { PrismaFeedRepository } from './modules/feed/repositories/PrismaFeedRepository';
 import { createFeedRouter } from './modules/feed/routes/feed.routes';
 import { FeedService } from './modules/feed/services/FeedService';
 import { MedicationController } from './modules/medication/controllers/MedicationController';
-import { InMemoryMedicationRepository } from './modules/medication/repositories/InMemoryMedicationRepository';
+import { PrismaMedicationRepository } from './modules/medication/repositories/PrismaMedicationRepository';
 import { createMedicationRouter } from './modules/medication/routes/medication.routes';
 import { MedicationService } from './modules/medication/services/MedicationService';
 import { SalesController } from './modules/sales/controllers/SalesController';
-import { InMemorySaleRepository } from './modules/sales/repositories/InMemorySaleRepository';
+import { PrismaSaleRepository } from './modules/sales/repositories/PrismaSaleRepository';
 import { createSalesRouter } from './modules/sales/routes/sales.routes';
 import { SalesService } from './modules/sales/services/SalesService';
 import { WeightController } from './modules/weight/controllers/WeightController';
-import { InMemoryWeightRepository } from './modules/weight/repositories/InMemoryWeightRepository';
+import { PrismaWeightRepository } from './modules/weight/repositories/PrismaWeightRepository';
 import { createWeightRouter } from './modules/weight/routes/weight.routes';
 import { WeightService } from './modules/weight/services/WeightService';
 import { EventBus } from './shared/events/EventBus';
@@ -54,16 +53,15 @@ export const createCompositionRoot = async (): Promise<CompositionRoot> => {
     const cycleRepository = new PrismaCycleRepository(prisma);
     const dailyLogRepository = new PrismaDailyLogRepository(prisma);
 
-    // const dailyLogRepository = new InMemoryDailyLogRepository();
-    const feedRepository = new InMemoryFeedRepository();
-    const weightRepository = new InMemoryWeightRepository();
-    const medicationRepository = new InMemoryMedicationRepository();
-    const expenseRepository = new InMemoryExpenseRepository();
-    const saleRepository = new InMemorySaleRepository();
+    const feedRepository = new PrismaFeedRepository(prisma);
+    const weightRepository = new PrismaWeightRepository(prisma);
+    const medicationRepository = new PrismaMedicationRepository(prisma);
+    const expenseRepository = new PrismaExpenseRepository(prisma);
+    const saleRepository = new PrismaSaleRepository(prisma);
 
-    const cycleService = new CycleService(cycleRepository, eventBus);
+    const cycleService = new CycleService(cycleRepository);
     const dailyLogService = new DailyLogService(dailyLogRepository, cycleService);
-    const feedService = new FeedService(feedRepository, cycleService, eventBus);
+    const feedService = new FeedService(feedRepository, cycleService);
     const weightService = new WeightService(weightRepository, cycleService);
     const medicationService = new MedicationService(
         medicationRepository,
@@ -154,26 +152,26 @@ const seedRealisticData = async ({
     });
 
     const seededDailyLogs = [
-        { date: '2026-06-02', deaths: 4, feedConsumedKg: 65, temperature: 31, humidity: 55, notes: 'Strong appetite observed' },
-        { date: '2026-06-03', deaths: 2, feedConsumedKg: 72, temperature: 30, humidity: 58, notes: 'Stable flock behavior' },
-        { date: '2026-06-04', deaths: 3, feedConsumedKg: 78, temperature: 30, humidity: 57, notes: 'Normal activity' },
-        { date: '2026-06-05', deaths: 2, feedConsumedKg: 84, temperature: 29, humidity: 56, notes: 'Good feed conversion signs' },
-        { date: '2026-06-06', deaths: 1, feedConsumedKg: 91, temperature: 29, humidity: 54, notes: 'Ventilation adjusted' },
-        { date: '2026-06-07', deaths: 2, feedConsumedKg: 99, temperature: 30, humidity: 53, notes: 'Starter phase closing' },
-        { date: '2026-06-08', deaths: 1, feedConsumedKg: 108, temperature: 29, humidity: 52, notes: 'Transition to grower feed' },
-        { date: '2026-06-09', deaths: 2, feedConsumedKg: 116, temperature: 28, humidity: 54, notes: 'Mild weather' },
-        { date: '2026-06-10', deaths: 1, feedConsumedKg: 124, temperature: 28, humidity: 55, notes: 'Steady growth' },
-        { date: '2026-06-11', deaths: 1, feedConsumedKg: 132, temperature: 29, humidity: 56, notes: 'Routine checks complete' },
-        { date: '2026-06-12', deaths: 2, feedConsumedKg: 140, temperature: 30, humidity: 57, notes: 'Humidity spike managed' },
-        { date: '2026-06-13', deaths: 1, feedConsumedKg: 149, temperature: 29, humidity: 55, notes: 'Flock stable' },
-        { date: '2026-06-14', deaths: 1, feedConsumedKg: 158, temperature: 28, humidity: 54, notes: 'Uniform bird size improving' },
-        { date: '2026-06-15', deaths: 2, feedConsumedKg: 166, temperature: 29, humidity: 53, notes: 'Additional litter maintenance' },
-        { date: '2026-06-16', deaths: 1, feedConsumedKg: 175, temperature: 30, humidity: 52, notes: 'Slight heat stress monitored' },
-        { date: '2026-06-17', deaths: 1, feedConsumedKg: 184, temperature: 30, humidity: 51, notes: 'Water lines flushed' },
-        { date: '2026-06-18', deaths: 2, feedConsumedKg: 194, temperature: 29, humidity: 53, notes: 'Good appetite throughout day' },
-        { date: '2026-06-19', deaths: 1, feedConsumedKg: 203, temperature: 28, humidity: 54, notes: 'Low mortality maintained' },
-        { date: '2026-06-20', deaths: 1, feedConsumedKg: 212, temperature: 28, humidity: 55, notes: 'Preparation for finisher stage' },
-        { date: '2026-06-21', deaths: 1, feedConsumedKg: 220, temperature: 29, humidity: 56, notes: 'Healthy flock condition' },
+        { date: '2026-06-02', deaths: 4, feedType: 'STARTER' as const, feedConsumedKg: 65, temperature: 31, humidity: 55, notes: 'Strong appetite observed' },
+        { date: '2026-06-03', deaths: 2, feedType: 'STARTER' as const, feedConsumedKg: 72, temperature: 30, humidity: 58, notes: 'Stable flock behavior' },
+        { date: '2026-06-04', deaths: 3, feedType: 'STARTER' as const, feedConsumedKg: 78, temperature: 30, humidity: 57, notes: 'Normal activity' },
+        { date: '2026-06-05', deaths: 2, feedType: 'STARTER' as const, feedConsumedKg: 84, temperature: 29, humidity: 56, notes: 'Good feed conversion signs' },
+        { date: '2026-06-06', deaths: 1, feedType: 'STARTER' as const, feedConsumedKg: 91, temperature: 29, humidity: 54, notes: 'Ventilation adjusted' },
+        { date: '2026-06-07', deaths: 2, feedType: 'GROWER' as const, feedConsumedKg: 99, temperature: 30, humidity: 53, notes: 'Starter phase closing' },
+        { date: '2026-06-08', deaths: 1, feedType: 'GROWER' as const, feedConsumedKg: 108, temperature: 29, humidity: 52, notes: 'Transition to grower feed' },
+        { date: '2026-06-09', deaths: 2, feedType: 'GROWER' as const, feedConsumedKg: 116, temperature: 28, humidity: 54, notes: 'Mild weather' },
+        { date: '2026-06-10', deaths: 1, feedType: 'GROWER' as const, feedConsumedKg: 124, temperature: 28, humidity: 55, notes: 'Steady growth' },
+        { date: '2026-06-11', deaths: 1, feedType: 'GROWER' as const, feedConsumedKg: 132, temperature: 29, humidity: 56, notes: 'Routine checks complete' },
+        { date: '2026-06-12', deaths: 2, feedType: 'GROWER' as const, feedConsumedKg: 140, temperature: 30, humidity: 57, notes: 'Humidity spike managed' },
+        { date: '2026-06-13', deaths: 1, feedType: 'GROWER' as const, feedConsumedKg: 149, temperature: 29, humidity: 55, notes: 'Flock stable' },
+        { date: '2026-06-14', deaths: 1, feedType: 'FINISHER' as const, feedConsumedKg: 158, temperature: 28, humidity: 54, notes: 'Uniform bird size improving' },
+        { date: '2026-06-15', deaths: 2, feedType: 'FINISHER' as const, feedConsumedKg: 166, temperature: 29, humidity: 53, notes: 'Additional litter maintenance' },
+        { date: '2026-06-16', deaths: 1, feedType: 'FINISHER' as const, feedConsumedKg: 175, temperature: 30, humidity: 52, notes: 'Slight heat stress monitored' },
+        { date: '2026-06-17', deaths: 1, feedType: 'FINISHER' as const, feedConsumedKg: 184, temperature: 30, humidity: 51, notes: 'Water lines flushed' },
+        { date: '2026-06-18', deaths: 2, feedType: 'FINISHER' as const, feedConsumedKg: 194, temperature: 29, humidity: 53, notes: 'Good appetite throughout day' },
+        { date: '2026-06-19', deaths: 1, feedType: 'FINISHER' as const, feedConsumedKg: 203, temperature: 28, humidity: 54, notes: 'Low mortality maintained' },
+        { date: '2026-06-20', deaths: 1, feedType: 'FINISHER' as const, feedConsumedKg: 212, temperature: 28, humidity: 55, notes: 'Preparation for finisher stage' },
+        { date: '2026-06-21', deaths: 1, feedType: 'FINISHER' as const, feedConsumedKg: 220, temperature: 29, humidity: 56, notes: 'Healthy flock condition' },
     ];
 
     for (const dailyLog of seededDailyLogs) {
@@ -184,9 +182,9 @@ const seedRealisticData = async ({
     }
 
     const seededFeedPurchases = [
-        { purchaseDate: '2026-06-02', feedType: 'STARTER' as const, quantityKg: 450, unitPrice: 0.62 },
-        { purchaseDate: '2026-06-09', feedType: 'GROWER' as const, quantityKg: 900, unitPrice: 0.68 },
-        { purchaseDate: '2026-06-17', feedType: 'FINISHER' as const, quantityKg: 1000, unitPrice: 0.74 },
+        { purchaseDate: '2026-06-02', feedType: 'STARTER' as const, quantityKg: 500, unitPrice: 0.62 },
+        { purchaseDate: '2026-06-09', feedType: 'GROWER' as const, quantityKg: 1000, unitPrice: 0.68 },
+        { purchaseDate: '2026-06-17', feedType: 'FINISHER' as const, quantityKg: 1600, unitPrice: 0.74 },
     ];
 
     for (const feedPurchase of seededFeedPurchases) {
@@ -265,3 +263,4 @@ const seedRealisticData = async ({
         });
     }
 };
+

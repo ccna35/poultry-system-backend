@@ -39,6 +39,7 @@ export class MedicationService {
             cycleId: createdLog.cycleId,
             medicationLogId: createdLog.id,
             date: createdLog.date,
+            amount: 0,
         });
 
         return createdLog;

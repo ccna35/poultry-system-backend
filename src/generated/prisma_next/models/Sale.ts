@@ -28,13 +28,13 @@ export type AggregateSale = {
 
 export type SaleAvgAggregateOutputType = {
   birdsSold: number | null
-  totalWeightKg: runtime.Decimal | null
+  averageSellingWeightKg: runtime.Decimal | null
   pricePerKg: runtime.Decimal | null
 }
 
 export type SaleSumAggregateOutputType = {
   birdsSold: number | null
-  totalWeightKg: runtime.Decimal | null
+  averageSellingWeightKg: runtime.Decimal | null
   pricePerKg: runtime.Decimal | null
 }
 
@@ -43,7 +43,7 @@ export type SaleMinAggregateOutputType = {
   cycleId: string | null
   saleDate: Date | null
   birdsSold: number | null
-  totalWeightKg: runtime.Decimal | null
+  averageSellingWeightKg: runtime.Decimal | null
   pricePerKg: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -54,7 +54,7 @@ export type SaleMaxAggregateOutputType = {
   cycleId: string | null
   saleDate: Date | null
   birdsSold: number | null
-  totalWeightKg: runtime.Decimal | null
+  averageSellingWeightKg: runtime.Decimal | null
   pricePerKg: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -65,7 +65,7 @@ export type SaleCountAggregateOutputType = {
   cycleId: number
   saleDate: number
   birdsSold: number
-  totalWeightKg: number
+  averageSellingWeightKg: number
   pricePerKg: number
   createdAt: number
   updatedAt: number
@@ -75,13 +75,13 @@ export type SaleCountAggregateOutputType = {
 
 export type SaleAvgAggregateInputType = {
   birdsSold?: true
-  totalWeightKg?: true
+  averageSellingWeightKg?: true
   pricePerKg?: true
 }
 
 export type SaleSumAggregateInputType = {
   birdsSold?: true
-  totalWeightKg?: true
+  averageSellingWeightKg?: true
   pricePerKg?: true
 }
 
@@ -90,7 +90,7 @@ export type SaleMinAggregateInputType = {
   cycleId?: true
   saleDate?: true
   birdsSold?: true
-  totalWeightKg?: true
+  averageSellingWeightKg?: true
   pricePerKg?: true
   createdAt?: true
   updatedAt?: true
@@ -101,7 +101,7 @@ export type SaleMaxAggregateInputType = {
   cycleId?: true
   saleDate?: true
   birdsSold?: true
-  totalWeightKg?: true
+  averageSellingWeightKg?: true
   pricePerKg?: true
   createdAt?: true
   updatedAt?: true
@@ -112,7 +112,7 @@ export type SaleCountAggregateInputType = {
   cycleId?: true
   saleDate?: true
   birdsSold?: true
-  totalWeightKg?: true
+  averageSellingWeightKg?: true
   pricePerKg?: true
   createdAt?: true
   updatedAt?: true
@@ -210,7 +210,7 @@ export type SaleGroupByOutputType = {
   cycleId: string
   saleDate: Date
   birdsSold: number
-  totalWeightKg: runtime.Decimal
+  averageSellingWeightKg: runtime.Decimal
   pricePerKg: runtime.Decimal
   createdAt: Date
   updatedAt: Date
@@ -244,7 +244,7 @@ export type SaleWhereInput = {
   cycleId?: Prisma.UuidFilter<"Sale"> | string
   saleDate?: Prisma.DateTimeFilter<"Sale"> | Date | string
   birdsSold?: Prisma.IntFilter<"Sale"> | number
-  totalWeightKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"Sale"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sale"> | Date | string
@@ -256,7 +256,7 @@ export type SaleOrderByWithRelationInput = {
   cycleId?: Prisma.SortOrder
   saleDate?: Prisma.SortOrder
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -271,7 +271,7 @@ export type SaleWhereUniqueInput = Prisma.AtLeast<{
   cycleId?: Prisma.UuidFilter<"Sale"> | string
   saleDate?: Prisma.DateTimeFilter<"Sale"> | Date | string
   birdsSold?: Prisma.IntFilter<"Sale"> | number
-  totalWeightKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"Sale"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sale"> | Date | string
@@ -283,7 +283,7 @@ export type SaleOrderByWithAggregationInput = {
   cycleId?: Prisma.SortOrder
   saleDate?: Prisma.SortOrder
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -302,7 +302,7 @@ export type SaleScalarWhereWithAggregatesInput = {
   cycleId?: Prisma.UuidWithAggregatesFilter<"Sale"> | string
   saleDate?: Prisma.DateTimeWithAggregatesFilter<"Sale"> | Date | string
   birdsSold?: Prisma.IntWithAggregatesFilter<"Sale"> | number
-  totalWeightKg?: Prisma.DecimalWithAggregatesFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalWithAggregatesFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalWithAggregatesFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Sale"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Sale"> | Date | string
@@ -312,7 +312,7 @@ export type SaleCreateInput = {
   id?: string
   saleDate: Date | string
   birdsSold: number
-  totalWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -324,7 +324,7 @@ export type SaleUncheckedCreateInput = {
   cycleId: string
   saleDate: Date | string
   birdsSold: number
-  totalWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -334,7 +334,7 @@ export type SaleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -346,7 +346,7 @@ export type SaleUncheckedUpdateInput = {
   cycleId?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -357,7 +357,7 @@ export type SaleCreateManyInput = {
   cycleId: string
   saleDate: Date | string
   birdsSold: number
-  totalWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -367,7 +367,7 @@ export type SaleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -378,7 +378,7 @@ export type SaleUncheckedUpdateManyInput = {
   cycleId?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -399,7 +399,7 @@ export type SaleCountOrderByAggregateInput = {
   cycleId?: Prisma.SortOrder
   saleDate?: Prisma.SortOrder
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -407,7 +407,7 @@ export type SaleCountOrderByAggregateInput = {
 
 export type SaleAvgOrderByAggregateInput = {
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
 }
 
@@ -416,7 +416,7 @@ export type SaleMaxOrderByAggregateInput = {
   cycleId?: Prisma.SortOrder
   saleDate?: Prisma.SortOrder
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -427,7 +427,7 @@ export type SaleMinOrderByAggregateInput = {
   cycleId?: Prisma.SortOrder
   saleDate?: Prisma.SortOrder
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -435,7 +435,7 @@ export type SaleMinOrderByAggregateInput = {
 
 export type SaleSumOrderByAggregateInput = {
   birdsSold?: Prisma.SortOrder
-  totalWeightKg?: Prisma.SortOrder
+  averageSellingWeightKg?: Prisma.SortOrder
   pricePerKg?: Prisma.SortOrder
 }
 
@@ -485,7 +485,7 @@ export type SaleCreateWithoutCycleInput = {
   id?: string
   saleDate: Date | string
   birdsSold: number
-  totalWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -495,7 +495,7 @@ export type SaleUncheckedCreateWithoutCycleInput = {
   id?: string
   saleDate: Date | string
   birdsSold: number
-  totalWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -535,7 +535,7 @@ export type SaleScalarWhereInput = {
   cycleId?: Prisma.UuidFilter<"Sale"> | string
   saleDate?: Prisma.DateTimeFilter<"Sale"> | Date | string
   birdsSold?: Prisma.IntFilter<"Sale"> | number
-  totalWeightKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"Sale"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Sale"> | Date | string
@@ -545,7 +545,7 @@ export type SaleCreateManyCycleInput = {
   id?: string
   saleDate: Date | string
   birdsSold: number
-  totalWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -555,7 +555,7 @@ export type SaleUpdateWithoutCycleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -565,7 +565,7 @@ export type SaleUncheckedUpdateWithoutCycleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -575,7 +575,7 @@ export type SaleUncheckedUpdateManyWithoutCycleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   saleDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   birdsSold?: Prisma.IntFieldUpdateOperationsInput | number
-  totalWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  averageSellingWeightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   pricePerKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -588,7 +588,7 @@ export type SaleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   cycleId?: boolean
   saleDate?: boolean
   birdsSold?: boolean
-  totalWeightKg?: boolean
+  averageSellingWeightKg?: boolean
   pricePerKg?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -600,7 +600,7 @@ export type SaleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   cycleId?: boolean
   saleDate?: boolean
   birdsSold?: boolean
-  totalWeightKg?: boolean
+  averageSellingWeightKg?: boolean
   pricePerKg?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -612,7 +612,7 @@ export type SaleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   cycleId?: boolean
   saleDate?: boolean
   birdsSold?: boolean
-  totalWeightKg?: boolean
+  averageSellingWeightKg?: boolean
   pricePerKg?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -624,13 +624,13 @@ export type SaleSelectScalar = {
   cycleId?: boolean
   saleDate?: boolean
   birdsSold?: boolean
-  totalWeightKg?: boolean
+  averageSellingWeightKg?: boolean
   pricePerKg?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SaleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cycleId" | "saleDate" | "birdsSold" | "totalWeightKg" | "pricePerKg" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
+export type SaleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cycleId" | "saleDate" | "birdsSold" | "averageSellingWeightKg" | "pricePerKg" | "createdAt" | "updatedAt", ExtArgs["result"]["sale"]>
 export type SaleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cycle?: boolean | Prisma.CycleDefaultArgs<ExtArgs>
 }
@@ -651,7 +651,7 @@ export type $SalePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     cycleId: string
     saleDate: Date
     birdsSold: number
-    totalWeightKg: runtime.Decimal
+    averageSellingWeightKg: runtime.Decimal
     pricePerKg: runtime.Decimal
     createdAt: Date
     updatedAt: Date
@@ -1083,7 +1083,7 @@ export interface SaleFieldRefs {
   readonly cycleId: Prisma.FieldRef<"Sale", 'String'>
   readonly saleDate: Prisma.FieldRef<"Sale", 'DateTime'>
   readonly birdsSold: Prisma.FieldRef<"Sale", 'Int'>
-  readonly totalWeightKg: Prisma.FieldRef<"Sale", 'Decimal'>
+  readonly averageSellingWeightKg: Prisma.FieldRef<"Sale", 'Decimal'>
   readonly pricePerKg: Prisma.FieldRef<"Sale", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"Sale", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Sale", 'DateTime'>

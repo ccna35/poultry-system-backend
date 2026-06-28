@@ -1,17 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { CycleService } from '../src/modules/cycles/services/CycleService';
-import { InMemoryCycleRepository } from '../src/modules/cycles/repositories/InMemoryCycleRepository';
-import { EventBus } from '../src/shared/events/EventBus';
 import { ConflictError } from '../src/shared/errors/ConflictError';
+import { InMemoryCycleRepository } from '../src/modules/cycles/repositories/InMemoryCycleRepository';
+import { CycleService } from '../src/modules/cycles/services/CycleService';
 
 describe('CycleService', () => {
     it('creates a cycle and blocks a second active cycle', async () => {
-        const eventBus = new EventBus();
-        const cycleService = new CycleService(
-            new InMemoryCycleRepository(),
-            eventBus,
-        );
+        const cycleService = new CycleService(new InMemoryCycleRepository());
 
         const firstCycle = await cycleService.createCycle({
             name: 'Test cycle',

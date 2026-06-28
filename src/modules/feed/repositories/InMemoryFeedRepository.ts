@@ -1,8 +1,12 @@
-import { FeedPurchase } from '../domain/FeedPurchase';
+import { Expense } from '../../expenses/domain/Expense';
+import { FeedBalance, FeedPurchase, FeedType } from '../domain/FeedPurchase';
 import { FeedRepository } from './FeedRepository';
+
+const FEED_TYPES: FeedType[] = ['STARTER', 'GROWER', 'FINISHER'];
 
 export class InMemoryFeedRepository implements FeedRepository {
     private readonly purchases: FeedPurchase[];
+    private readonly balances = new Map<string, number>();
 
     constructor(seedData: FeedPurchase[] = []) {
         this.purchases = [...seedData];
@@ -13,9 +17,33 @@ export class InMemoryFeedRepository implements FeedRepository {
         return feedPurchase;
     }
 
+    async createWithInventoryAndExpense(
+        feedPurchase: FeedPurchase,
+        _expense: Expense,
+    ): Promise<FeedPurchase> {
+        this.purchases.push(feedPurchase);
+
+        const key = this.getBalanceKey(feedPurchase.cycleId, feedPurchase.feedType);
+        const currentBalance = this.balances.get(key) ?? 0;
+        this.balances.set(key, currentBalance + feedPurchase.quantityKg);
+
+        return feedPurchase;
+    }
+
     async listByCycle(cycleId: string): Promise<FeedPurchase[]> {
         return this.purchases
             .filter((purchase) => purchase.cycleId === cycleId)
             .sort((a, b) => a.purchaseDate.localeCompare(b.purchaseDate));
+    }
+
+    async listBalancesByCycle(cycleId: string): Promise<FeedBalance[]> {
+        return FEED_TYPES.map((feedType) => ({
+            feedType,
+            quantityKg: this.balances.get(this.getBalanceKey(cycleId, feedType)) ?? 0,
+        }));
+    }
+
+    private getBalanceKey(cycleId: string, feedType: FeedType): string {
+        return `${cycleId}:${feedType}`;
     }
 }

@@ -1,8 +1,11 @@
+import { FeedType } from '../../feed/domain/FeedPurchase';
+
 export interface DailyLog {
     id: string;
     cycleId: string;
     date: string;
     deaths: number;
+    feedType: FeedType;
     feedConsumedKg: number;
     temperature: number | null;
     humidity: number | null;
@@ -16,6 +19,7 @@ export interface AddDailyLogInput {
     cycleId: string;
     date: string;
     deaths: number;
+    feedType: FeedType;
     feedConsumedKg: number;
     temperature?: number | null;
     humidity?: number | null;

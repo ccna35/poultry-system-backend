@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma_next"
 }
 
 datasource db {
@@ -243,7 +243,7 @@ model Sale {
 
   birdsSold Int @map("birds_sold")
 
-  totalWeightKg Decimal @map("total_weight_kg") @db.Decimal(10, 3)
+  averageSellingWeightKg Decimal @map("average_selling_weight_kg") @db.Decimal(10, 3)
   pricePerKg             Decimal @map("price_per_kg") @db.Decimal(12, 2)
 
   createdAt DateTime @default(now()) @map("created_at")

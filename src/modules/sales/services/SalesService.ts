@@ -12,15 +12,11 @@ export class SalesService {
     private readonly saleRepository: SaleRepository,
     private readonly cycleService: CycleService,
     private readonly dailyLogService: DailyLogService,
-  ) {}
+  ) { }
 
   async createSale(input: CreateSaleInput): Promise<Sale> {
-    if (input.birdsSold <= 0) {
-      throw new ValidationError('birdsSold must be greater than 0');
-    }
-
-    if (input.averageSellingWeightKg <= 0) {
-      throw new ValidationError('averageSellingWeightKg must be greater than 0');
+    if (input.totalWeightKg <= 0) {
+      throw new ValidationError('totalWeightKg must be greater than 0');
     }
 
     if (input.pricePerKg < 0) {
@@ -32,31 +28,28 @@ export class SalesService {
       throw new ConflictError('Only one sale per cycle is allowed in MVP');
     }
 
+    const saleDate = toDateOnly(input.saleDate);
     const cycle = await this.cycleService.ensureCycleIsActive(input.cycleId);
-
     const totalDeaths = await this.dailyLogService.getTotalDeathsByCycle(input.cycleId);
-    const remainingBirds = Math.max(0, cycle.initialBirds - totalDeaths);
+    const birdsSold = Math.max(0, cycle.initialBirds - totalDeaths);
 
-    if (input.birdsSold > remainingBirds) {
-      throw new ValidationError('birdsSold cannot exceed remaining birds');
+    if (birdsSold <= 0) {
+      throw new ValidationError('There are no remaining birds to sell for this cycle');
     }
 
     const timestamp = nowIso();
     const sale: Sale = {
       id: generateId(),
       cycleId: input.cycleId,
-      saleDate: toDateOnly(input.saleDate),
-      birdsSold: input.birdsSold,
-      averageSellingWeightKg: input.averageSellingWeightKg,
+      saleDate,
+      birdsSold,
+      totalWeightKg: input.totalWeightKg,
       pricePerKg: input.pricePerKg,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
 
-    const createdSale = await this.saleRepository.create(sale);
-    await this.cycleService.completeCycle(input.cycleId, createdSale.saleDate);
-
-    return createdSale;
+    return this.saleRepository.createAndCompleteCycle(sale);
   }
 
   async getSaleByCycle(cycleId: string): Promise<Sale | null> {

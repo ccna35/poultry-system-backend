@@ -3,7 +3,7 @@ export interface Sale {
     cycleId: string;
     saleDate: string;
     birdsSold: number;
-    averageSellingWeightKg: number;
+    totalWeightKg: number;
     pricePerKg: number;
     createdAt: string;
     updatedAt: string;
@@ -12,7 +12,6 @@ export interface Sale {
 export interface CreateSaleInput {
     cycleId: string;
     saleDate: string;
-    birdsSold: number;
-    averageSellingWeightKg: number;
+    totalWeightKg: number;
     pricePerKg: number;
 }

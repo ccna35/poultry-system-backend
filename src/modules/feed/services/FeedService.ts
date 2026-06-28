@@ -1,17 +1,17 @@
+import { Expense } from '../../expenses/domain/Expense';
 import { ValidationError } from '../../../shared/errors/ValidationError';
-import { EventBus } from '../../../shared/events/EventBus';
-import { DOMAIN_EVENT_TYPES } from '../../../shared/events/domain-events';
 import { nowIso, toDateOnly } from '../../../shared/utils/date';
 import { generateId } from '../../../shared/utils/id';
 import { CycleService } from '../../cycles/services/CycleService';
-import { AddFeedPurchaseInput, FeedPurchase } from '../domain/FeedPurchase';
+import { AddFeedPurchaseInput, FeedBalance, FeedPurchase, FeedType } from '../domain/FeedPurchase';
 import { FeedRepository } from '../repositories/FeedRepository';
+
+const FEED_TYPES: FeedType[] = ['STARTER', 'GROWER', 'FINISHER'];
 
 export class FeedService {
     constructor(
         private readonly feedRepository: FeedRepository,
         private readonly cycleService: CycleService,
-        private readonly eventBus: EventBus,
     ) { }
 
     async addFeedPurchase(input: AddFeedPurchaseInput): Promise<FeedPurchase> {
@@ -37,20 +37,38 @@ export class FeedService {
             updatedAt: timestamp,
         };
 
-        const createdPurchase = await this.feedRepository.create(purchase);
+        const expense: Expense = {
+            id: generateId(),
+            cycleId: purchase.cycleId,
+            expenseDate: purchase.purchaseDate,
+            category: 'FEED',
+            amount: purchase.quantityKg * purchase.unitPrice,
+            description: 'Automatic feed expense from feed purchase',
+            sourceType: 'FEED_PURCHASE',
+            sourceId: purchase.id,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+        };
 
-        await this.eventBus.publish(DOMAIN_EVENT_TYPES.FEED_PURCHASE_CREATED, {
-            cycleId: createdPurchase.cycleId,
-            purchaseId: createdPurchase.id,
-            purchaseDate: createdPurchase.purchaseDate,
-            amount: createdPurchase.quantityKg * createdPurchase.unitPrice,
-        });
-
-        return createdPurchase;
+        return this.feedRepository.createWithInventoryAndExpense(purchase, expense);
     }
 
     async listFeedPurchasesByCycle(cycleId: string): Promise<FeedPurchase[]> {
         await this.cycleService.getCycleById(cycleId);
         return this.feedRepository.listByCycle(cycleId);
+    }
+
+    async listFeedBalancesByCycle(cycleId: string): Promise<FeedBalance[]> {
+        await this.cycleService.getCycleById(cycleId);
+
+        const storedBalances = await this.feedRepository.listBalancesByCycle(cycleId);
+        const balancesByType = new Map(
+            storedBalances.map((balance) => [balance.feedType, balance.quantityKg]),
+        );
+
+        return FEED_TYPES.map((feedType) => ({
+            feedType,
+            quantityKg: balancesByType.get(feedType) ?? 0,
+        }));
     }
 }

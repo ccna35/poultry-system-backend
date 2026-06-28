@@ -1233,7 +1233,7 @@ export const SaleScalarFieldEnum = {
   cycleId: 'cycleId',
   saleDate: 'saleDate',
   birdsSold: 'birdsSold',
-  totalWeightKg: 'totalWeightKg',
+  averageSellingWeightKg: 'averageSellingWeightKg',
   pricePerKg: 'pricePerKg',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

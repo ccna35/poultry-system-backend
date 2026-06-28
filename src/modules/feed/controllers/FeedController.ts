@@ -21,4 +21,12 @@ export class FeedController {
 
         res.status(200).json({ success: true, data: purchases });
     };
+
+    listBalancesByCycle = async (req: Request, res: Response): Promise<void> => {
+        const balances = await this.feedService.listFeedBalancesByCycle(
+            req.params.cycleId,
+        );
+
+        res.status(200).json({ success: true, data: balances });
+    };
 }

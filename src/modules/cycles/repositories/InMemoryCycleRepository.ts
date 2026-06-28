@@ -1,3 +1,4 @@
+import { Expense } from '../../expenses/domain/Expense';
 import { Cycle } from '../domain/Cycle';
 import { CycleRepository } from './CycleRepository';
 
@@ -11,6 +12,11 @@ export class InMemoryCycleRepository implements CycleRepository {
     }
 
     async create(cycle: Cycle): Promise<Cycle> {
+        this.cycles.set(cycle.id, cycle);
+        return cycle;
+    }
+
+    async createWithInitialExpense(cycle: Cycle, _expense: Expense): Promise<Cycle> {
         this.cycles.set(cycle.id, cycle);
         return cycle;
     }

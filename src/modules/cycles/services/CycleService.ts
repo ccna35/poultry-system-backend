@@ -1,18 +1,14 @@
+import { Expense } from '../../expenses/domain/Expense';
 import { ConflictError } from '../../../shared/errors/ConflictError';
 import { NotFoundError } from '../../../shared/errors/NotFoundError';
 import { ValidationError } from '../../../shared/errors/ValidationError';
-import { EventBus } from '../../../shared/events/EventBus';
-import { DOMAIN_EVENT_TYPES } from '../../../shared/events/domain-events';
 import { nowIso } from '../../../shared/utils/date';
 import { generateId } from '../../../shared/utils/id';
 import { CreateCycleInput, Cycle } from '../domain/Cycle';
 import { CycleRepository } from '../repositories/CycleRepository';
 
 export class CycleService {
-    constructor(
-        private readonly cycleRepository: CycleRepository,
-        private readonly eventBus: EventBus,
-    ) { }
+    constructor(private readonly cycleRepository: CycleRepository) { }
 
     async createCycle(input: CreateCycleInput): Promise<Cycle> {
         this.validateCreateInput(input);
@@ -38,15 +34,20 @@ export class CycleService {
             updatedAt: timestamp,
         };
 
-        const createdCycle = await this.cycleRepository.create(cycle);
+        const chicksExpense: Expense = {
+            id: generateId(),
+            cycleId: cycle.id,
+            expenseDate: cycle.startDate,
+            category: 'CHICKS',
+            amount: cycle.initialBirds * cycle.chickPrice,
+            description: 'Automatic chicks expense on cycle creation',
+            sourceType: 'SYSTEM',
+            sourceId: cycle.id,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+        };
 
-        await this.eventBus.publish(DOMAIN_EVENT_TYPES.CYCLE_CREATED, {
-            cycleId: createdCycle.id,
-            expenseDate: createdCycle.startDate,
-            amount: createdCycle.initialBirds * createdCycle.chickPrice,
-        });
-
-        return createdCycle;
+        return this.cycleRepository.createWithInitialExpense(cycle, chicksExpense);
     }
 
     async getCycleById(id: string): Promise<Cycle> {

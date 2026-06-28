@@ -11,6 +11,11 @@ export interface FeedPurchase {
   updatedAt: string;
 }
 
+export interface FeedBalance {
+  feedType: FeedType;
+  quantityKg: number;
+}
+
 export interface AddFeedPurchaseInput {
   cycleId: string;
   purchaseDate: string;
