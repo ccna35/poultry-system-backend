@@ -35,7 +35,7 @@ export const validateRequest = ({
                     .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
                     .join('; ');
 
-                next(new ValidationError(details || 'Invalid request payload'));
+                next(new ValidationError(details || 'بيانات الطلب غير صالحة'));
                 return;
             }
 

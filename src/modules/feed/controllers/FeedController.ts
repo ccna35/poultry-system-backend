@@ -29,4 +29,12 @@ export class FeedController {
 
         res.status(200).json({ success: true, data: balances });
     };
+
+    listMovementsByCycle = async (req: Request, res: Response): Promise<void> => {
+        const movements = await this.feedService.listFeedMovementsByCycle(
+            req.params.cycleId,
+        );
+
+        res.status(200).json({ success: true, data: movements });
+    };
 }

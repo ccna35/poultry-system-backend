@@ -13,11 +13,11 @@ export class WeightService {
 
     async addWeightLog(input: AddWeightLogInput): Promise<WeightLog> {
         if (input.sampleSize <= 0) {
-            throw new ValidationError('sampleSize must be greater than 0');
+            throw new ValidationError('حجم العينة يجب أن يكون أكبر من 0');
         }
 
         if (input.averageWeightKg <= 0) {
-            throw new ValidationError('averageWeightKg must be greater than 0');
+            throw new ValidationError('متوسط الوزن يجب أن يكون أكبر من 0');
         }
 
         await this.cycleService.ensureCycleIsActive(input.cycleId);

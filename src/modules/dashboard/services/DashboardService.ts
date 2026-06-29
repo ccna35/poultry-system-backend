@@ -87,7 +87,7 @@ export class DashboardService {
             estimatedRevenue - (totalExpenses + cycle.expectedRemainingCost);
 
         const actualRevenue = sale
-            ? sale.birdsSold * sale.averageSellingWeightKg * sale.pricePerKg
+            ? sale.totalWeightKg * sale.pricePerKg
             : null;
 
         const actualProfit =
@@ -101,10 +101,7 @@ export class DashboardService {
         );
 
         const actualFcr = sale
-            ? this.safeDivide(
-                totalFeedConsumedKg,
-                sale.birdsSold * sale.averageSellingWeightKg,
-            )
+            ? this.safeDivide(totalFeedConsumedKg, sale.totalWeightKg)
             : null;
 
         const endDate = cycle.endDate ?? new Date().toISOString();
@@ -166,3 +163,5 @@ export class DashboardService {
         return numerator / denominator;
     }
 }
+
+

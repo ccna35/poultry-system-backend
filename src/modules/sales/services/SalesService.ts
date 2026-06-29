@@ -16,16 +16,16 @@ export class SalesService {
 
   async createSale(input: CreateSaleInput): Promise<Sale> {
     if (input.totalWeightKg <= 0) {
-      throw new ValidationError('totalWeightKg must be greater than 0');
+      throw new ValidationError('إجمالي الوزن يجب أن يكون أكبر من 0');
     }
 
     if (input.pricePerKg < 0) {
-      throw new ValidationError('pricePerKg cannot be negative');
+      throw new ValidationError('سعر الكيلو لا يمكن أن يكون سالبًا');
     }
 
     const existingSale = await this.saleRepository.findByCycle(input.cycleId);
     if (existingSale) {
-      throw new ConflictError('Only one sale per cycle is allowed in MVP');
+      throw new ConflictError('يُسمح بعملية بيع واحدة فقط لكل دورة في نسخة الـ MVP.');
     }
 
     const saleDate = toDateOnly(input.saleDate);
@@ -34,7 +34,7 @@ export class SalesService {
     const birdsSold = Math.max(0, cycle.initialBirds - totalDeaths);
 
     if (birdsSold <= 0) {
-      throw new ValidationError('There are no remaining birds to sell for this cycle');
+      throw new ValidationError('لا توجد طيور متبقية للبيع في هذه الدورة');
     }
 
     const timestamp = nowIso();

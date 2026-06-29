@@ -3,7 +3,13 @@ import { ValidationError } from '../../../shared/errors/ValidationError';
 import { nowIso, toDateOnly } from '../../../shared/utils/date';
 import { generateId } from '../../../shared/utils/id';
 import { CycleService } from '../../cycles/services/CycleService';
-import { AddFeedPurchaseInput, FeedBalance, FeedPurchase, FeedType } from '../domain/FeedPurchase';
+import {
+    AddFeedPurchaseInput,
+    FeedBalance,
+    FeedInventoryMovement,
+    FeedPurchase,
+    FeedType,
+} from '../domain/FeedPurchase';
 import { FeedRepository } from '../repositories/FeedRepository';
 
 const FEED_TYPES: FeedType[] = ['STARTER', 'GROWER', 'FINISHER'];
@@ -16,11 +22,11 @@ export class FeedService {
 
     async addFeedPurchase(input: AddFeedPurchaseInput): Promise<FeedPurchase> {
         if (input.quantityKg <= 0) {
-            throw new ValidationError('quantityKg must be greater than 0');
+            throw new ValidationError('كمية العلف يجب أن تكون أكبر من 0');
         }
 
         if (input.unitPrice < 0) {
-            throw new ValidationError('unitPrice cannot be negative');
+            throw new ValidationError('سعر الوحدة لا يمكن أن يكون سالبًا');
         }
 
         await this.cycleService.ensureCycleIsActive(input.cycleId);
@@ -70,5 +76,10 @@ export class FeedService {
             feedType,
             quantityKg: balancesByType.get(feedType) ?? 0,
         }));
+    }
+
+    async listFeedMovementsByCycle(cycleId: string): Promise<FeedInventoryMovement[]> {
+        await this.cycleService.getCycleById(cycleId);
+        return this.feedRepository.listMovementsByCycle(cycleId);
     }
 }

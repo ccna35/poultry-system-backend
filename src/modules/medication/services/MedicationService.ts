@@ -16,7 +16,7 @@ export class MedicationService {
 
     async addMedicationLog(input: AddMedicationLogInput): Promise<MedicationLog> {
         if (!input.medicineName?.trim()) {
-            throw new ValidationError('medicineName is required');
+            throw new ValidationError('اسم الدواء مطلوب');
         }
 
         await this.cycleService.ensureCycleIsActive(input.cycleId);

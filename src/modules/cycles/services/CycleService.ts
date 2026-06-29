@@ -15,7 +15,7 @@ export class CycleService {
 
         const activeCycle = await this.cycleRepository.findActive();
         if (activeCycle) {
-            throw new ConflictError('Only one active cycle is allowed');
+            throw new ConflictError('يُسمح بدورة نشطة واحدة فقط.');
         }
 
         const timestamp = nowIso();
@@ -53,7 +53,7 @@ export class CycleService {
     async getCycleById(id: string): Promise<Cycle> {
         const cycle = await this.cycleRepository.findById(id);
         if (!cycle) {
-            throw new NotFoundError('Cycle not found');
+            throw new NotFoundError('الدورة غير موجودة');
         }
 
         return cycle;
@@ -88,7 +88,7 @@ export class CycleService {
         const cycle = await this.getCycleById(cycleId);
 
         if (cycle.status !== 'ACTIVE') {
-            throw new ConflictError('Cycle is completed');
+            throw new ConflictError('تم إكمال الدورة.');
         }
 
         return cycle;
@@ -96,27 +96,27 @@ export class CycleService {
 
     private validateCreateInput(input: CreateCycleInput): void {
         if (!input.name?.trim()) {
-            throw new ValidationError('Cycle name is required');
+            throw new ValidationError('اسم الدورة مطلوب');
         }
 
         if (input.initialBirds <= 0) {
-            throw new ValidationError('initialBirds must be greater than 0');
+            throw new ValidationError('عدد الطيور الابتدائي يجب أن يكون أكبر من 0');
         }
 
         if (input.chickPrice < 0) {
-            throw new ValidationError('chickPrice cannot be negative');
+            throw new ValidationError('سعر الكتكوت لا يمكن أن يكون سالبًا');
         }
 
         if (input.expectedFinalWeightKg <= 0) {
-            throw new ValidationError('expectedFinalWeightKg must be greater than 0');
+            throw new ValidationError('الوزن النهائي المتوقع يجب أن يكون أكبر من 0');
         }
 
         if (input.expectedSellingPricePerKg < 0) {
-            throw new ValidationError('expectedSellingPricePerKg cannot be negative');
+            throw new ValidationError('سعر البيع المتوقع لكل كجم لا يمكن أن يكون سالبًا');
         }
 
         if (input.expectedRemainingCost < 0) {
-            throw new ValidationError('expectedRemainingCost cannot be negative');
+            throw new ValidationError('التكلفة المتبقية المتوقعة لا يمكن أن تكون سالبة');
         }
     }
 }

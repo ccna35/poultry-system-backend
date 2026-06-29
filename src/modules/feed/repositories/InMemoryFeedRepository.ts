@@ -1,11 +1,17 @@
 import { Expense } from '../../expenses/domain/Expense';
-import { FeedBalance, FeedPurchase, FeedType } from '../domain/FeedPurchase';
+import {
+    FeedBalance,
+    FeedInventoryMovement,
+    FeedPurchase,
+    FeedType,
+} from '../domain/FeedPurchase';
 import { FeedRepository } from './FeedRepository';
 
 const FEED_TYPES: FeedType[] = ['STARTER', 'GROWER', 'FINISHER'];
 
 export class InMemoryFeedRepository implements FeedRepository {
     private readonly purchases: FeedPurchase[];
+    private readonly movements: FeedInventoryMovement[] = [];
     private readonly balances = new Map<string, number>();
 
     constructor(seedData: FeedPurchase[] = []) {
@@ -22,6 +28,19 @@ export class InMemoryFeedRepository implements FeedRepository {
         _expense: Expense,
     ): Promise<FeedPurchase> {
         this.purchases.push(feedPurchase);
+        this.movements.push({
+            id: feedPurchase.id,
+            cycleId: feedPurchase.cycleId,
+            movementDate: feedPurchase.purchaseDate,
+            feedType: feedPurchase.feedType,
+            movementType: 'PURCHASE',
+            quantityKg: feedPurchase.quantityKg,
+            referenceType: 'FEED_PURCHASE',
+            referenceId: feedPurchase.id,
+            notes: 'Automatic inventory increase from feed purchase',
+            createdAt: feedPurchase.createdAt,
+            updatedAt: feedPurchase.updatedAt,
+        });
 
         const key = this.getBalanceKey(feedPurchase.cycleId, feedPurchase.feedType);
         const currentBalance = this.balances.get(key) ?? 0;
@@ -41,6 +60,12 @@ export class InMemoryFeedRepository implements FeedRepository {
             feedType,
             quantityKg: this.balances.get(this.getBalanceKey(cycleId, feedType)) ?? 0,
         }));
+    }
+
+    async listMovementsByCycle(cycleId: string): Promise<FeedInventoryMovement[]> {
+        return this.movements
+            .filter((movement) => movement.cycleId === cycleId)
+            .sort((a, b) => a.movementDate.localeCompare(b.movementDate));
     }
 
     private getBalanceKey(cycleId: string, feedType: FeedType): string {

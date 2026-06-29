@@ -82,7 +82,7 @@ export class ExpenseService {
             | AddSystemExpenseInput,
     ): Promise<Expense> {
         if (input.amount < 0) {
-            throw new ValidationError('amount cannot be negative');
+            throw new ValidationError('المبلغ لا يمكن أن يكون سالبًا');
         }
 
         const timestamp = nowIso();

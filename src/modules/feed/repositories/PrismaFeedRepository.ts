@@ -2,11 +2,16 @@ import {
     Prisma,
     PrismaClient,
     type FeedInventoryBalance as PrismaFeedInventoryBalanceModel,
+    type FeedInventoryMovement as PrismaFeedInventoryMovementModel,
     type FeedPurchase as PrismaFeedPurchaseModel,
 } from '../../../generated/prisma/client';
 
 import { Expense } from '../../expenses/domain/Expense';
-import { FeedBalance, FeedPurchase } from '../domain/FeedPurchase';
+import {
+    FeedBalance,
+    FeedInventoryMovement,
+    FeedPurchase,
+} from '../domain/FeedPurchase';
 import { FeedRepository } from './FeedRepository';
 
 export class PrismaFeedRepository implements FeedRepository {
@@ -82,6 +87,24 @@ export class PrismaFeedRepository implements FeedRepository {
         });
 
         return balances.map(toDomainFeedBalance);
+    }
+
+    async listMovementsByCycle(cycleId: string): Promise<FeedInventoryMovement[]> {
+        const movements = await this.prisma.feedInventoryMovement.findMany({
+            where: {
+                cycleId,
+            },
+            orderBy: [
+                {
+                    movementDate: 'asc',
+                },
+                {
+                    createdAt: 'asc',
+                },
+            ],
+        });
+
+        return movements.map(toDomainFeedInventoryMovement);
     }
 }
 
@@ -162,6 +185,24 @@ function toDomainFeedBalance(balance: PrismaFeedInventoryBalanceModel): FeedBala
     return {
         feedType: balance.feedType,
         quantityKg: balance.quantityKg.toNumber(),
+    };
+}
+
+function toDomainFeedInventoryMovement(
+    movement: PrismaFeedInventoryMovementModel,
+): FeedInventoryMovement {
+    return {
+        id: movement.id,
+        cycleId: movement.cycleId,
+        movementDate: toDateString(movement.movementDate),
+        feedType: movement.feedType,
+        movementType: movement.movementType,
+        quantityKg: movement.quantityKg.toNumber(),
+        referenceType: movement.referenceType,
+        referenceId: movement.referenceId,
+        notes: movement.notes,
+        createdAt: movement.createdAt.toISOString(),
+        updatedAt: movement.updatedAt.toISOString(),
     };
 }
 

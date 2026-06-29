@@ -23,6 +23,7 @@ export const createFeedRouter = (controller: FeedController): Router => {
     );
 
     router.get('/balances', controller.listBalancesByCycle);
+    router.get('/movements', controller.listMovementsByCycle);
     router.get('/', controller.listByCycle);
 
     return router;

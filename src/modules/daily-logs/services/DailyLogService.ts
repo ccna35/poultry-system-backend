@@ -66,11 +66,11 @@ export class DailyLogService {
 
     private validateInput(input: AddDailyLogInput): void {
         if (input.deaths < 0) {
-            throw new ValidationError('deaths cannot be negative');
+            throw new ValidationError('عدد الوفيات لا يمكن أن يكون سالبًا');
         }
 
         if (input.feedConsumedKg < 0) {
-            throw new ValidationError('feedConsumedKg cannot be negative');
+            throw new ValidationError('كمية العلف المستهلكة لا يمكن أن تكون سالبة');
         }
     }
 }
