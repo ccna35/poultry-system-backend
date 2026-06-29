@@ -4,11 +4,11 @@ import { z } from 'zod';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { MedicationController } from '../controllers/MedicationController';
 
-const dosageUnitSchema = z.enum(["جرام", "مل", "ملعقة"], {
+const dosageUnitSchema = z.enum(["GRAM", "ML", "SPOON"], {
     message: "اختر وحدة الجرعة",
 })
 
-const dosagePerUnitSchema = z.enum(["لتر", "طائر", "كجم"], {
+const dosagePerUnitSchema = z.enum(["LITER", "BIRD", "KG"], {
     message: "اختر وحدة القياس",
 })
 

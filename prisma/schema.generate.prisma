@@ -49,6 +49,10 @@ enum ExpenseSourceType {
   SYSTEM
 }
 
+enum Role {
+  ADMIN
+}
+
 // Recommended: store stable English codes in DB.
 // Display Arabic labels in the frontend.
 enum DosageUnit {
@@ -92,6 +96,55 @@ model Cycle {
   weightLogs             WeightLog[]
 
   @@map("cycles")
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  email        String @unique
+  passwordHash String @map("password_hash")
+  role         Role   @default(ADMIN)
+
+  passwordChangedAt DateTime  @map("password_changed_at")
+  lastLoginAt       DateTime? @map("last_login_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  refreshSessions RefreshSession[]
+
+  @@map("users")
+}
+
+model RefreshSession {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  familyId  String @map("family_id") @db.Uuid
+  tokenHash String @unique @map("token_hash")
+
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  replacedBySessionId String?         @unique @map("replaced_by_session_id") @db.Uuid
+  replacedBySession   RefreshSession? @relation("RefreshSessionReplacement", fields: [replacedBySessionId], references: [id])
+  previousSession     RefreshSession? @relation("RefreshSessionReplacement")
+
+  lastUsedAt DateTime? @map("last_used_at")
+  userAgent  String?   @map("user_agent")
+  ipAddress  String?   @map("ip_address")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+  @@index([revokedAt])
+  @@index([userId, revokedAt])
+  @@index([familyId, revokedAt])
+  @@map("refresh_sessions")
 }
 
 model FeedPurchase {
@@ -243,8 +296,8 @@ model Sale {
 
   birdsSold Int @map("birds_sold")
 
-  averageSellingWeightKg Decimal @map("average_selling_weight_kg") @db.Decimal(10, 3)
-  pricePerKg             Decimal @map("price_per_kg") @db.Decimal(12, 2)
+  totalWeightKg Decimal @map("total_weight_kg") @db.Decimal(10, 3)
+  pricePerKg    Decimal @map("price_per_kg") @db.Decimal(12, 2)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

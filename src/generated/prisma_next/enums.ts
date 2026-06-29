@@ -69,6 +69,13 @@ export const ExpenseSourceType = {
 export type ExpenseSourceType = (typeof ExpenseSourceType)[keyof typeof ExpenseSourceType]
 
 
+export const Role = {
+  ADMIN: 'ADMIN'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
 export const DosageUnit = {
   SPOON: 'SPOON',
   GRAM: 'GRAM',

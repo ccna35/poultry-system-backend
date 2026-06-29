@@ -543,10 +543,6 @@ export type NullableEnumFeedInventoryReferenceTypeFieldUpdateOperationsInput = {
   set?: $Enums.FeedInventoryReferenceType | null
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type FeedInventoryMovementCreateWithoutCycleInput = {
   id?: string
   movementDate: Date | string

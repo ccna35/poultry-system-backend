@@ -1,6 +1,7 @@
 import 'express-async-errors';
 import express, { Express } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import { createCompositionRoot } from './composition-root';
 import { errorHandler } from './shared/http/errorHandler';
@@ -14,6 +15,7 @@ export const createApp = async (): Promise<Express> => {
         credentials: true,
     }));
 
+    app.use(cookieParser());
     app.use(express.json());
 
     app.get('/health', (_req, res) => {

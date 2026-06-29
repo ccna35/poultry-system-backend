@@ -1,15 +1,29 @@
 import 'dotenv/config';
 import { Router } from 'express';
+import { PrismaPg } from '@prisma/adapter-pg';
 
+import { DosagePerUnit, DosageUnit, PrismaClient } from './generated/prisma/client';
+import { createAuthConfig } from './modules/auth/config/auth.config';
+import { AuthController } from './modules/auth/controllers/AuthController';
+import { createRequireAuthMiddleware } from './modules/auth/middleware/requireAuth';
+import { PrismaRefreshSessionRepository } from './modules/auth/repositories/PrismaRefreshSessionRepository';
+import { PrismaUserRepository } from './modules/auth/repositories/PrismaUserRepository';
+import { createAuthRouter } from './modules/auth/routes/auth.routes';
+import { AuthCookieService } from './modules/auth/services/AuthCookieService';
+import { AuthService } from './modules/auth/services/AuthService';
+import { AuthTokenService } from './modules/auth/services/AuthTokenService';
+import { PasswordService } from './modules/auth/services/PasswordService';
 import { CycleController } from './modules/cycles/controllers/CycleController';
+import { PrismaCycleRepository } from './modules/cycles/repositories/PrismaCycleRepository';
 import { createCycleRouter } from './modules/cycles/routes/cycle.routes';
 import { CycleService } from './modules/cycles/services/CycleService';
-import { DailyLogController } from './modules/daily-logs/controllers/DailyLogController';
-import { createDailyLogRouter } from './modules/daily-logs/routes/daily-log.routes';
-import { DailyLogService } from './modules/daily-logs/services/DailyLogService';
 import { DashboardController } from './modules/dashboard/controllers/DashboardController';
 import { createDashboardRouter } from './modules/dashboard/routes/dashboard.routes';
 import { DashboardService } from './modules/dashboard/services/DashboardService';
+import { DailyLogController } from './modules/daily-logs/controllers/DailyLogController';
+import { PrismaDailyLogRepository } from './modules/daily-logs/repositories/PrismaDailyLogRepository';
+import { createDailyLogRouter } from './modules/daily-logs/routes/daily-log.routes';
+import { DailyLogService } from './modules/daily-logs/services/DailyLogService';
 import { ExpenseController } from './modules/expenses/controllers/ExpenseController';
 import { registerExpenseEventHandlers } from './modules/expenses/handlers/expense.event-handlers';
 import { PrismaExpenseRepository } from './modules/expenses/repositories/PrismaExpenseRepository';
@@ -32,10 +46,6 @@ import { PrismaWeightRepository } from './modules/weight/repositories/PrismaWeig
 import { createWeightRouter } from './modules/weight/routes/weight.routes';
 import { WeightService } from './modules/weight/services/WeightService';
 import { EventBus } from './shared/events/EventBus';
-import { PrismaCycleRepository } from './modules/cycles/repositories/PrismaCycleRepository';
-import { DosagePerUnit, DosageUnit, PrismaClient } from './generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaDailyLogRepository } from './modules/daily-logs/repositories/PrismaDailyLogRepository';
 
 export type CompositionRoot = {
     apiRouter: Router;
@@ -43,21 +53,34 @@ export type CompositionRoot = {
 
 export const createCompositionRoot = async (): Promise<CompositionRoot> => {
     const eventBus = new EventBus();
-
-    // const cycleRepository = new InMemoryCycleRepository();
+    const authConfig = createAuthConfig();
 
     const prisma = new PrismaClient({
         adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
     });
 
+    const userRepository = new PrismaUserRepository(prisma);
+    const refreshSessionRepository = new PrismaRefreshSessionRepository(prisma);
     const cycleRepository = new PrismaCycleRepository(prisma);
     const dailyLogRepository = new PrismaDailyLogRepository(prisma);
-
     const feedRepository = new PrismaFeedRepository(prisma);
     const weightRepository = new PrismaWeightRepository(prisma);
     const medicationRepository = new PrismaMedicationRepository(prisma);
     const expenseRepository = new PrismaExpenseRepository(prisma);
     const saleRepository = new PrismaSaleRepository(prisma);
+
+    const authTokenService = new AuthTokenService(authConfig);
+    const passwordService = new PasswordService();
+    const authCookieService = new AuthCookieService(authConfig);
+    const authService = new AuthService({
+        authConfig,
+        userRepository,
+        refreshSessionRepository,
+        authTokenService,
+        passwordService,
+    });
+
+    await authService.bootstrapAdmin();
 
     const cycleService = new CycleService(cycleRepository);
     const dailyLogService = new DailyLogService(dailyLogRepository, cycleService);
@@ -84,15 +107,11 @@ export const createCompositionRoot = async (): Promise<CompositionRoot> => {
 
     registerExpenseEventHandlers(eventBus, expenseService);
 
-    // await seedRealisticData({
-    //     cycleService,
-    //     dailyLogService,
-    //     feedService,
-    //     weightService,
-    //     medicationService,
-    //     expenseService,
-    // });
-
+    const authController = new AuthController(
+        authService,
+        authCookieService,
+        authConfig,
+    );
     const cycleController = new CycleController(cycleService);
     const dailyLogController = new DailyLogController(dailyLogService);
     const feedController = new FeedController(feedService);
@@ -102,8 +121,16 @@ export const createCompositionRoot = async (): Promise<CompositionRoot> => {
     const salesController = new SalesController(salesService);
     const dashboardController = new DashboardController(dashboardService);
 
+    const requireAuth = createRequireAuthMiddleware(
+        authConfig.accessTokenCookieName,
+        authTokenService,
+        userRepository,
+    );
+
     const apiRouter = Router();
 
+    apiRouter.use('/auth', createAuthRouter(authController, requireAuth));
+    apiRouter.use(requireAuth);
     apiRouter.use('/cycles', createCycleRouter(cycleController));
     apiRouter.use(
         '/cycles/:cycleId/daily-logs',
@@ -263,4 +290,3 @@ const seedRealisticData = async ({
         });
     }
 };
-

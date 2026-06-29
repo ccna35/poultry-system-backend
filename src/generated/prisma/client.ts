@@ -45,6 +45,16 @@ export { Prisma }
  */
 export type Cycle = Prisma.CycleModel
 /**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model RefreshSession
+ * 
+ */
+export type RefreshSession = Prisma.RefreshSessionModel
+/**
  * Model FeedPurchase
  * 
  */
