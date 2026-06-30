@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { ExpenseController } from '../controllers/ExpenseController';
 
@@ -26,11 +27,11 @@ export const createExpenseRouter = (controller: ExpenseController): Router => {
     router.post(
         '/',
         validateRequest({ body: addManualExpenseSchema }),
-        controller.addManualExpense,
+        asyncHandler(controller.addManualExpense),
     );
 
-    router.get('/', controller.listByCycle);
-    router.get('/breakdown', controller.getBreakdownByCycle);
+    router.get('/', asyncHandler(controller.listByCycle));
+    router.get('/breakdown', asyncHandler(controller.getBreakdownByCycle));
 
     return router;
 };

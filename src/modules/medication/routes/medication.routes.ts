@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { MedicationController } from '../controllers/MedicationController';
 
@@ -51,10 +52,10 @@ export const createMedicationRouter = (
     router.post(
         '/',
         validateRequest({ body: addMedicationLogSchema }),
-        controller.addMedicationLog,
+        asyncHandler(controller.addMedicationLog),
     );
 
-    router.get('/', controller.listByCycle);
+    router.get('/', asyncHandler(controller.listByCycle));
 
     return router;
 };

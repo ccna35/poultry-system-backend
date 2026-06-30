@@ -1,9 +1,8 @@
-import 'dotenv/config';
 import { Router } from 'express';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 import { DosagePerUnit, DosageUnit, PrismaClient } from './generated/prisma/client';
-import { createAuthConfig } from './modules/auth/config/auth.config';
+import { AppConfig } from './shared/config/app.config';
 import { AuthController } from './modules/auth/controllers/AuthController';
 import { createRequireAuthMiddleware } from './modules/auth/middleware/requireAuth';
 import { PrismaRefreshSessionRepository } from './modules/auth/repositories/PrismaRefreshSessionRepository';
@@ -49,14 +48,17 @@ import { EventBus } from './shared/events/EventBus';
 
 export type CompositionRoot = {
     apiRouter: Router;
+    dispose: () => Promise<void>;
 };
 
-export const createCompositionRoot = async (): Promise<CompositionRoot> => {
+export const createCompositionRoot = async (
+    appConfig: AppConfig,
+): Promise<CompositionRoot> => {
     const eventBus = new EventBus();
-    const authConfig = createAuthConfig();
+    const authConfig = appConfig.auth;
 
     const prisma = new PrismaClient({
-        adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+        adapter: new PrismaPg({ connectionString: appConfig.database.url })
     });
 
     const userRepository = new PrismaUserRepository(prisma);
@@ -148,6 +150,9 @@ export const createCompositionRoot = async (): Promise<CompositionRoot> => {
 
     return {
         apiRouter,
+        dispose: async () => {
+            await prisma.$disconnect();
+        },
     };
 };
 
@@ -169,7 +174,7 @@ const seedRealisticData = async ({
     expenseService,
 }: SeedServices): Promise<void> => {
     const cycle = await cycleService.createCycle({
-        name: 'دورة شهر 6 عام 2026',
+        name: 'ÃƒËœÃ‚Â¯Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â±ÃƒËœÃ‚Â© ÃƒËœÃ‚Â´Ãƒâ„¢Ã¢â‚¬Â¡ÃƒËœÃ‚Â± 6 ÃƒËœÃ‚Â¹ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Â¦ 2026',
         startDate: '2026-06-01',
         initialBirds: 1000,
         chickPrice: 1.8,
@@ -290,3 +295,4 @@ const seedRealisticData = async ({
         });
     }
 };
+

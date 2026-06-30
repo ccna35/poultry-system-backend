@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { SalesController } from '../controllers/SalesController';
 
@@ -16,10 +17,10 @@ export const createSalesRouter = (controller: SalesController): Router => {
     router.post(
         '/',
         validateRequest({ body: createSaleSchema }),
-        controller.createSale,
+        asyncHandler(controller.createSale),
     );
 
-    router.get('/', controller.getSaleByCycle);
+    router.get('/', asyncHandler(controller.getSaleByCycle));
 
     return router;
 };

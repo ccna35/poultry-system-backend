@@ -1,6 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { AuthController } from '../controllers/AuthController';
 
@@ -18,13 +19,13 @@ export const createAuthRouter = (
     router.post(
         '/login',
         validateRequest({ body: loginSchema }),
-        authController.login,
+        asyncHandler(authController.login),
     );
-    router.post('/refresh', authController.refresh);
+    router.post('/refresh', asyncHandler(authController.refresh));
 
     router.use(requireAuth);
-    router.post('/logout', authController.logout);
-    router.get('/me', authController.me);
+    router.post('/logout', asyncHandler(authController.logout));
+    router.get('/me', asyncHandler(authController.me));
 
     return router;
 };

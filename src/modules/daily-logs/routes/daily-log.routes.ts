@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { DailyLogController } from '../controllers/DailyLogController';
 
@@ -23,10 +24,10 @@ export const createDailyLogRouter = (
     router.post(
         '/',
         validateRequest({ body: addDailyLogSchema }),
-        controller.addDailyLog,
+        asyncHandler(controller.addDailyLog),
     );
 
-    router.get('/', controller.listByCycle);
+    router.get('/', asyncHandler(controller.listByCycle));
 
     return router;
 };

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { FeedController } from '../controllers/FeedController';
 
@@ -19,12 +20,12 @@ export const createFeedRouter = (controller: FeedController): Router => {
     router.post(
         '/',
         validateRequest({ body: addFeedPurchaseSchema }),
-        controller.addFeedPurchase,
+        asyncHandler(controller.addFeedPurchase),
     );
 
-    router.get('/balances', controller.listBalancesByCycle);
-    router.get('/movements', controller.listMovementsByCycle);
-    router.get('/', controller.listByCycle);
+    router.get('/balances', asyncHandler(controller.listBalancesByCycle));
+    router.get('/movements', asyncHandler(controller.listMovementsByCycle));
+    router.get('/', asyncHandler(controller.listByCycle));
 
     return router;
 };

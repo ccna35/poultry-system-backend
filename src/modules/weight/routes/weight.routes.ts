@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { WeightController } from '../controllers/WeightController';
 
@@ -17,10 +18,10 @@ export const createWeightRouter = (controller: WeightController): Router => {
     router.post(
         '/',
         validateRequest({ body: addWeightLogSchema }),
-        controller.addWeightLog,
+        asyncHandler(controller.addWeightLog),
     );
 
-    router.get('/', controller.listByCycle);
+    router.get('/', asyncHandler(controller.listByCycle));
 
     return router;
 };

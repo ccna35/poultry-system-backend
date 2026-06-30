@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 
+import { asyncHandler } from '../../../shared/http/asyncHandler';
 import { validateRequest } from '../../../shared/http/validateRequest';
 import { CycleController } from '../controllers/CycleController';
 
@@ -22,11 +23,11 @@ export const createCycleRouter = (
     router.post(
         '/',
         validateRequest({ body: createCycleSchema }),
-        cycleController.createCycle,
+        asyncHandler(cycleController.createCycle),
     );
 
-    router.get('/', cycleController.listCycles);
-    router.get('/:id', cycleController.getCycleById);
+    router.get('/', asyncHandler(cycleController.listCycles));
+    router.get('/:id', asyncHandler(cycleController.getCycleById));
 
     return router;
 };
